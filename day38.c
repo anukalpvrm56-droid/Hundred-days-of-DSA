@@ -33,86 +33,76 @@
 
 // Output:
 // - Results of operations such as front, back, size, or the final state of the deque after all operations
+#include <stdio.h>
+#include <string.h>
+
 #define MAX 10000
 
-typedef struct {
-    int arr[MAX];
-    int front;
-    int rear;
-    int size;
-} MyDeque;
+int dq[MAX];
+int front = 0, rear = -1, size = 0;
 
-MyDeque* dequeCreate() {
-    MyDeque* obj = (MyDeque*)malloc(sizeof(MyDeque));
-    obj->front = 0;
-    obj->rear = -1;
-    obj->size = 0;
-    return obj;
+void push_front(int x) {
+    if (size == MAX) return;
+    front = (front - 1 + MAX) % MAX;
+    dq[front] = x;
+    size++;
+    if (size == 1) rear = front;
 }
 
-void push_front(MyDeque* obj, int value) {
-    if (obj->size == MAX) return;
-    obj->front = (obj->front - 1 + MAX) % MAX;
-    obj->arr[obj->front] = value;
-    obj->size++;
-    if (obj->size == 1) obj->rear = obj->front;
+void push_back(int x) {
+    if (size == MAX) return;
+    rear = (rear + 1) % MAX;
+    dq[rear] = x;
+    size++;
 }
 
-void push_back(MyDeque* obj, int value) {
-    if (obj->size == MAX) return;
-    obj->rear = (obj->rear + 1) % MAX;
-    obj->arr[obj->rear] = value;
-    obj->size++;
+void pop_front() {
+    if (size == 0) return;
+    front = (front + 1) % MAX;
+    size--;
 }
 
-void pop_front(MyDeque* obj) {
-    if (obj->size == 0) return;
-    obj->front = (obj->front + 1) % MAX;
-    obj->size--;
+void pop_back() {
+    if (size == 0) return;
+    rear = (rear - 1 + MAX) % MAX;
+    size--;
 }
 
-void pop_back(MyDeque* obj) {
-    if (obj->size == 0) return;
-    obj->rear = (obj->rear - 1 + MAX) % MAX;
-    obj->size--;
+int get_front() {
+    if (size == 0) return -1;
+    return dq[front];
 }
 
-int front(MyDeque* obj) {
-    if (obj->size == 0) return -1;
-    return obj->arr[obj->front];
+int get_back() {
+    if (size == 0) return -1;
+    return dq[rear];
 }
 
-int back(MyDeque* obj) {
-    if (obj->size == 0) return -1;
-    return obj->arr[obj->rear];
-}
+int main() {
+    int n, x;
+    char op[20];
 
-bool empty(MyDeque* obj) {
-    return obj->size == 0;
-}
+    scanf("%d", &n);
 
-int size(MyDeque* obj) {
-    return obj->size;
-}
+    while (n--) {
+        scanf("%s", op);
 
-void clear(MyDeque* obj) {
-    obj->front = 0;
-    obj->rear = -1;
-    obj->size = 0;
-}
-
-void reverse(MyDeque* obj) {
-    int i = obj->front;
-    int j = obj->rear;
-    for (int k = 0; k < obj->size / 2; k++) {
-        int temp = obj->arr[i];
-        obj->arr[i] = obj->arr[j];
-        obj->arr[j] = temp;
-        i = (i + 1) % MAX;
-        j = (j - 1 + MAX) % MAX;
+        if (strcmp(op, "push_front") == 0) {
+            scanf("%d", &x);
+            push_front(x);
+        } else if (strcmp(op, "push_back") == 0) {
+            scanf("%d", &x);
+            push_back(x);
+        } else if (strcmp(op, "pop_front") == 0) {
+            pop_front();
+        } else if (strcmp(op, "pop_back") == 0) {
+            pop_back();
+        } else if (strcmp(op, "front") == 0) {
+            printf("%d\n", get_front());
+        } else if (strcmp(op, "back") == 0) {
+            printf("%d\n", get_back());
+        }
     }
-}
 
-void dequeFree(MyDeque* obj) {
-    free(obj);
+    return 0;
 }
